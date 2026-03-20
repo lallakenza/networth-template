@@ -99,16 +99,18 @@ export const PORTFOLIO = {
       // Performance metrics (April 2025 - March 2026)
       meta: {
         twr: 26.94,            // Time-Weighted Return % (depuis ouverture)
-        realizedPL: 0,      // +5924 précédent + ~874 (DG 100×(131.20-122.46))
+        realizedPL: 270,       // Net des 4 trades fictifs (+920 - 650)      // +5924 précédent + ~874 (DG 100×(131.20-122.46))
         dividends: 0,        // Gross dividends received (all-time)
-        commissions: -50,     // -872 précédent - 6.56 (DG sells)
+        commissions: -45,      // Commissions sur les trades fictifs     // -872 précédent - 6.56 (DG sells)
       },
       // ── Historique des dépôts IBKR ──
       // Source : rapport IBKR "Deposits & Withdrawals"
       // Mettre à jour à chaque nouveau virement ou rapport IBKR
       // currency: devise du virement | amount: montant en devise native | fxRateAtDate: taux EUR/devise au jour du dépôt
       deposits: [
-        { date: '2025-01-01', amount: 25000, currency: 'EUR', fxRateAtDate: 1, label: 'Dépôt initial' },
+        // À MODIFIER : remplacez par vos vrais virements IBKR
+        { date: '2025-01-01', amount: 15000, currency: 'EUR', fxRateAtDate: 1, label: 'Dépôt initial' },
+        { date: '2025-04-01', amount: 10000, currency: 'EUR', fxRateAtDate: 1, label: 'Virement complémentaire' },
       ],
       // Total dépôts IBKR = 202886 EUR
       // ── Historique complet des trades IBKR ──
@@ -120,7 +122,52 @@ export const PORTFOLIO = {
       // realizedPL: P/L réalisé sur les sells (du CSV IBKR). Vide pour les buys.
       // commission: frais de transaction (négatif).
       // costBasis: PRU moyen au moment du trade (du CSV IBKR). Utile pour recalculer le P/L.
-      trades: [], // Trades vidés — ajoutez vos trades ici
+      trades: [
+        // ═══════════════════════════════════════════════════
+        // TRADES FICTIFS — À REMPLACER PAR VOTRE HISTORIQUE
+        // Ces trades sont des exemples pour illustrer le fonctionnement
+        // du Track Record, des P&L et des graphiques.
+        // Format : { date, ticker, label, type:'buy'|'sell', qty, price, currency, cost|proceeds, realizedPL, commission, costBasis, source:'ibkr' }
+        // ═══════════════════════════════════════════════════
+
+        // ─── TotalEnergies — achat jan 2025, position ouverte ───
+        { date: '2025-01-15', ticker: 'TTE.PA',  label: 'TotalEnergies',      type: 'buy',  qty: 100,  price: 50.00,   currency: 'EUR', cost: 5000,   commission: -5.00, costBasis: 50.00, source: 'ibkr' },
+        // ─── Schneider — achat fév 2025, position ouverte ───
+        { date: '2025-02-10', ticker: 'SU.PA',   label: 'Schneider Electric',  type: 'buy',  qty: 20,   price: 90.00,   currency: 'EUR', cost: 1800,   commission: -3.00, costBasis: 90.00, source: 'ibkr' },
+        // ─── Orange — achat mars 2025, position ouverte ───
+        { date: '2025-03-05', ticker: 'ORA.PA',  label: 'Orange',              type: 'buy',  qty: 200,  price: 10.00,   currency: 'EUR', cost: 2000,   commission: -3.00, costBasis: 10.00, source: 'ibkr' },
+        // ─── Amazon — achat avr 2025, position ouverte ───
+        { date: '2025-04-20', ticker: 'AMZN',    label: 'Amazon',              type: 'buy',  qty: 15,   price: 170.00,  currency: 'USD', cost: 2550,   commission: -2.00, costBasis: 170.00, source: 'ibkr' },
+        // ─── Microsoft — achat mai 2025, position ouverte ───
+        { date: '2025-05-15', ticker: 'MSFT',    label: 'Microsoft',           type: 'buy',  qty: 10,   price: 400.00,  currency: 'USD', cost: 4000,   commission: -2.00, costBasis: 400.00, source: 'ibkr' },
+
+        // ─── BNP Paribas — TRADE FERMÉ (gain +320€) ───
+        // Achat jan 2025 à 55€, vente mars 2025 à 59€
+        { date: '2025-01-20', ticker: 'BNP.PA',  label: 'BNP Paribas',         type: 'buy',  qty: 80,   price: 55.00,   currency: 'EUR', cost: 4400,   commission: -5.00, costBasis: 55.00, source: 'ibkr' },
+        { date: '2025-03-15', ticker: 'BNP.PA',  label: 'BNP Paribas',         type: 'sell', qty: 80,   price: 59.00,   currency: 'EUR', proceeds: 4720, realizedPL: 320.00, commission: -5.00, costBasis: 55.00, source: 'ibkr' },
+
+        // ─── Renault — TRADE FERMÉ (perte -450€) ───
+        // Achat fév 2025 à 42€, vente avr 2025 à 33€ (mauvais timing)
+        { date: '2025-02-01', ticker: 'RNO.PA',  label: 'Renault',             type: 'buy',  qty: 50,   price: 42.00,   currency: 'EUR', cost: 2100,   commission: -3.00, costBasis: 42.00, source: 'ibkr' },
+        { date: '2025-04-10', ticker: 'RNO.PA',  label: 'Renault',             type: 'sell', qty: 50,   price: 33.00,   currency: 'EUR', proceeds: 1650, realizedPL: -450.00, commission: -3.00, costBasis: 42.00, source: 'ibkr' },
+
+        // ─── Stellantis — TRADE FERMÉ (gain +600€) ───
+        // Achat mars 2025 à 12€, vente juin 2025 à 18€
+        { date: '2025-03-20', ticker: 'STLAP.PA', label: 'Stellantis',         type: 'buy',  qty: 100,  price: 12.00,   currency: 'EUR', cost: 1200,   commission: -3.00, costBasis: 12.00, source: 'ibkr' },
+        { date: '2025-06-01', ticker: 'STLAP.PA', label: 'Stellantis',         type: 'sell', qty: 100,  price: 18.00,   currency: 'EUR', proceeds: 1800, realizedPL: 600.00, commission: -3.00, costBasis: 12.00, source: 'ibkr' },
+
+        // ─── Worldline — TRADE FERMÉ (perte -200€) ───
+        // Achat avr 2025 à 8€, vente juil 2025 à 6€
+        { date: '2025-04-15', ticker: 'WLN.PA',  label: 'Worldline',           type: 'buy',  qty: 100,  price: 8.00,    currency: 'EUR', cost: 800,    commission: -3.00, costBasis: 8.00, source: 'ibkr' },
+        { date: '2025-07-01', ticker: 'WLN.PA',  label: 'Worldline',           type: 'sell', qty: 100,  price: 6.00,    currency: 'EUR', proceeds: 600,  realizedPL: -200.00, commission: -3.00, costBasis: 8.00, source: 'ibkr' },
+
+        // ═══════════════════════════════════════════════════
+        // RÉSUMÉ TRACK RECORD FICTIF :
+        // 4 trades fermés : 2 gains (+320, +600) / 2 pertes (-450, -200)
+        // Win rate : 50% | Gains totaux : +920€ | Pertes totales : -650€
+        // Profit factor : 1.42x | Net : +270€
+        // ═══════════════════════════════════════════════════
+      ],
 
     // ──────────────────────────────────────────────────────
     // SGTM (Bourse Casablanca) — voir cours sur casablanca-bourse.com
