@@ -208,15 +208,15 @@ export const PORTFOLIO = {
     // ──────────────────────────────────────────────────────
     creances: {
       items: [
-        // status: en_cours | relancé | en_retard | recouvré | litige
-        // payments: historique des paiements partiels reçus
-        { label: 'SAP & Tax (20j x 910€)', amount: 0, currency: 'EUR', type: 'pro', guaranteed: true, probability: 1.0, delayDays: 45, status: 'en_cours', dueDate: '2026-04-15', lastContact: '2026-03-01', payments: [], notes: 'Facture envoyée, paiement sous 45j' },
-        { label: 'Malt — Frais déplacement NZ', amount: 0, currency: 'EUR', type: 'pro', guaranteed: true, probability: 1.0, delayDays: 30, status: 'en_cours', dueDate: '2026-04-15', lastContact: '2026-03-08', payments: [], notes: 'Note de frais déplacement NZ — Sourcing Desk L\'Oréal, livré 26 fév 2026' },
-        { label: 'Loyers impayés (Fév + Mars)', amount: 0, currency: 'EUR', type: 'pro', guaranteed: false, probability: 0.7, status: 'relancé', dueDate: '2026-03-01', lastContact: '2026-03-05', payments: [], notes: 'Relance envoyée au locataire' },
-        { label: 'Kenza', amount: 0, currency: 'MAD', type: 'perso', guaranteed: true, probability: 1.0, status: 'en_cours', dueDate: '2026-12-31', lastContact: '2026-02-15', payments: [], notes: 'Remboursement prévu après vente terrain' },
-        { label: 'Abdelkader', amount: 0, currency: 'MAD', type: 'perso', guaranteed: false, probability: 0.7, status: 'en_cours', dueDate: '2026-06-30', lastContact: '2026-01-10', payments: [], notes: '' },
-        { label: 'Mehdi', amount: 30000, currency: 'MAD', type: 'perso', guaranteed: true, probability: 1.0, status: 'en_cours', dueDate: '2026-09-30', lastContact: '2026-02-20', payments: [], notes: '' },
-        { label: 'Akram', amount: 1500, currency: 'EUR', type: 'perso', guaranteed: false, probability: 0.7, status: 'en_retard', dueDate: '2026-01-31', lastContact: '2026-02-01', payments: [], notes: 'Pas de nouvelle depuis' },
+        // ═══════════════════════════════════════════════════
+        // CRÉANCES FICTIVES — À REMPLACER PAR VOS VRAIES CRÉANCES
+        // Format: { label, amount, currency, type:'pro'|'perso', guaranteed, probability, status, dueDate, lastContact, payments:[], notes }
+        // ═══════════════════════════════════════════════════
+        { label: 'Facture client ABC (mission conseil)', amount: 3500, currency: 'EUR', type: 'pro', guaranteed: true, probability: 1.0, delayDays: 30, status: 'en_cours', dueDate: '2026-04-15', lastContact: '2026-03-10', payments: [], notes: 'Facture envoyée, paiement sous 30j' },
+        { label: 'Dépôt garantie ancien appart', amount: 1200, currency: 'EUR', type: 'perso', guaranteed: true, probability: 0.9, status: 'en_cours', dueDate: '2026-05-01', lastContact: '2026-02-28', payments: [], notes: 'Restitution après état des lieux' },
+        { label: 'Prêt ami Youssef', amount: 5000, currency: 'MAD', type: 'perso', guaranteed: false, probability: 0.6, status: 'relancé', dueDate: '2026-06-30', lastContact: '2026-01-15', payments: [], notes: 'Relance envoyée' },
+        { label: 'Prêt cousin Ahmed', amount: 30000, currency: 'MAD', type: 'perso', guaranteed: true, probability: 1.0, status: 'en_cours', dueDate: '2026-09-30', lastContact: '2026-02-20', payments: [], notes: '' },
+        { label: 'Avance collègue Sara', amount: 1500, currency: 'EUR', type: 'perso', guaranteed: false, probability: 0.7, status: 'en_retard', dueDate: '2026-01-31', lastContact: '2026-02-01', payments: [], notes: 'Pas de nouvelle depuis' },
         // Anas — remboursé le 7 mars 2026 → supprimé
       ],
     },
@@ -273,7 +273,7 @@ export const PORTFOLIO = {
     },
     creances: {
       items: [
-        { label: 'Omar', amount: 0, currency: 'MAD', guaranteed: false, probability: 0.7, status: 'en_cours', dueDate: '2026-12-31', lastContact: '2026-01-15', payments: [], notes: '' },
+        { label: 'Prêt ami Karim', amount: 0, currency: 'MAD', guaranteed: false, probability: 0.7, status: 'en_cours', dueDate: '2026-12-31', lastContact: '2026-01-15', payments: [], notes: '' },
       ],
     },
     // Caution locative Rueil — dépôt de garantie reçu du locataire, à rembourser au départ
@@ -1055,20 +1055,52 @@ export const DIV_CALENDAR = {
 // Les crédits immo sont générés dynamiquement par engine.js depuis IMMO_CONSTANTS.charges
 // ════════════════════════════════════════════════════════════
 export const BUDGET_EXPENSES = [
-  { label: 'Loyer Dubai',     amount: 145000, currency: 'AED', freq: 'yearly',    zone: 'Dubai',   type: 'Logement' },
-  { label: 'Électricité',     amount: 840,    currency: 'AED', freq: 'monthly',   zone: 'Dubai',   type: 'Utilities' },
-  { label: 'Fibre Internet',  amount: 360,    currency: 'AED', freq: 'monthly',   zone: 'Dubai',   type: 'Utilities' },
-  { label: 'Gaz',             amount: 120,    currency: 'AED', freq: 'quarterly', zone: 'Dubai',   type: 'Utilities' },
-  { label: 'Téléphone',       amount: 1669,   currency: 'AED', freq: 'yearly',    zone: 'Dubai',   type: 'Abonnements' },
-  { label: 'Claude (AI)',     amount: 100,    currency: 'USD', freq: 'monthly',   zone: 'Digital', type: 'Abonnements' },
-  { label: 'Spotify',         amount: 75,     currency: 'MAD', freq: 'monthly',   zone: 'Digital', type: 'Abonnements' },
-  { label: 'Assurance Classe A', amount: 114,  currency: 'EUR', freq: 'monthly',   zone: 'France',  type: 'Assurance' },
-  { label: 'Assurance Porsche Cayenne', amount: 8000, currency: 'AED', freq: 'yearly', zone: 'Dubai', type: 'Assurance' },
-  { label: 'Amex Platinum',   amount: 720,    currency: 'EUR', freq: 'yearly',    zone: 'France',  type: 'Abonnements' },
-  { label: 'On/Off',          amount: 58.99,  currency: 'EUR', freq: 'yearly',    zone: 'Digital', type: 'Abonnements' },
-  { label: 'YouTube Premium', amount: 110,    currency: 'MAD', freq: 'monthly',   zone: 'Digital', type: 'Abonnements' },
-  { label: 'Careem Plus',    amount: 19,     currency: 'AED', freq: 'monthly',   zone: 'Dubai',   type: 'Abonnements' },
-  { label: 'Noon One',       amount: 25,     currency: 'AED', freq: 'monthly',   zone: 'Dubai',   type: 'Abonnements' },
-  { label: 'iCloud+ 2TB',    amount: 39.99,  currency: 'AED', freq: 'monthly',   zone: 'Dubai',   type: 'Abonnements' },
-  { label: 'Netflix',        amount: 65,     currency: 'MAD', freq: 'monthly',   zone: 'Digital', type: 'Abonnements' },
+  // ═══════════════════════════════════════════════════════════
+  // DÉPENSES FICTIVES — Famille de 4 personnes (Paris + Maroc)
+  // À REMPLACER par vos vraies dépenses mensuelles
+  // Format: { label, amount, currency, freq, zone, type }
+  // freq: 'mois', 'an', 'trim.'
+  // zone: 'France', 'Maroc', 'Digital'
+  // type: 'Logement', 'Utilities', 'Assurance', 'Abonnements',
+  //       'Transport', 'Alimentation', 'Enfants', 'Santé'
+  // ═══════════════════════════════════════════════════════════
+
+  // ── LOGEMENT ──
+  { label: 'Loyer appartement Paris',      amount: 1400,  currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Logement' },
+  { label: 'Charges copropriété',          amount: 180,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Logement' },
+  { label: 'Taxe habitation',              amount: 800,   currency: 'EUR', freq: 'an',    zone: 'France', type: 'Logement' },
+
+  // ── UTILITIES ──
+  { label: 'Électricité EDF',              amount: 120,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Utilities' },
+  { label: 'Gaz Engie',                    amount: 65,    currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Utilities' },
+  { label: 'Eau',                          amount: 45,    currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Utilities' },
+  { label: 'Internet Fibre (Free)',        amount: 30,    currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Utilities' },
+
+  // ── ASSURANCES ──
+  { label: 'Assurance habitation (MMA)',   amount: 35,    currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Assurance' },
+  { label: 'Assurance auto (Matmut)',      amount: 85,    currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Assurance' },
+  { label: 'Mutuelle famille (4 pers)',    amount: 250,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Santé' },
+
+  // ── TRANSPORT ──
+  { label: 'Navigo (2 adultes)',           amount: 170,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Transport' },
+  { label: 'Essence voiture',              amount: 100,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Transport' },
+
+  // ── ALIMENTATION ──
+  { label: 'Courses alimentaires',         amount: 800,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Alimentation' },
+  { label: 'Cantine enfants (x2)',         amount: 180,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Enfants' },
+
+  // ── ENFANTS ──
+  { label: 'Activités extra-scolaires',    amount: 120,   currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Enfants' },
+  { label: 'Fournitures scolaires',        amount: 400,   currency: 'EUR', freq: 'an',    zone: 'France', type: 'Enfants' },
+
+  // ── ABONNEMENTS ──
+  { label: 'Téléphone mobile (x2)',        amount: 40,    currency: 'EUR', freq: 'mois',  zone: 'France', type: 'Abonnements' },
+  { label: 'Netflix',                      amount: 16,    currency: 'EUR', freq: 'mois',  zone: 'Digital', type: 'Abonnements' },
+  { label: 'Spotify Famille',              amount: 17,    currency: 'EUR', freq: 'mois',  zone: 'Digital', type: 'Abonnements' },
+  { label: 'iCloud 200Go',                 amount: 3,     currency: 'EUR', freq: 'mois',  zone: 'Digital', type: 'Abonnements' },
+
+  // ── MAROC (envois famille / charges appart Casablanca) ──
+  { label: 'Charges appart Casa',          amount: 500,   currency: 'MAD', freq: 'mois',  zone: 'Maroc', type: 'Logement' },
+  { label: 'Envoi famille mensuel',        amount: 3000,  currency: 'MAD', freq: 'mois',  zone: 'Maroc', type: 'Alimentation' },
+  { label: 'Assurance auto Maroc',         amount: 4000,  currency: 'MAD', freq: 'an',    zone: 'Maroc', type: 'Assurance' },
 ];
