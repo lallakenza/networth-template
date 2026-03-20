@@ -156,14 +156,14 @@ function computeActionsView(portfolio, fx, stockSource, ibkrNAV, ibkrPositions, 
   const esppCurrentVal = toEUR(espp.shares * m.acnPriceUSD, 'USD', fx);
   const esppUnrealizedPL = esppCurrentVal - esppCostBasisEUR;
 
-  // Nezha ESPP
+  // Personne 2 ESPP
   const nezhaEsppData = portfolio.nezha.espp || {};
   const nezhaEsppShares = nezhaEsppData.shares || 0;
   const nezhaEsppCurrentVal = toEUR(nezhaEsppShares * m.acnPriceUSD, 'USD', fx);
   const nezhaEsppCostBasisEUR = toEUR(nezhaEsppData.totalCostBasisUSD || 0, 'USD', fx);
   const nezhaEsppUnrealizedPL = nezhaEsppCurrentVal - nezhaEsppCostBasisEUR;
 
-  // Total all stocks (IBKR + ESPP Amine + ESPP Nezha + SGTM)
+  // Total all stocks (IBKR + ESPP Personne 1 + ESPP Personne 2 + SGTM)
   const totalStocks = ibkrNAV + amineEspp + nezhaEspp + amineSgtm + nezhaSgtm;
 
   // Geo allocation from IBKR positions
@@ -209,35 +209,35 @@ function computeActionsView(portfolio, fx, stockSource, ibkrNAV, ibkrPositions, 
     });
   }
 
-  // 1. IBKR deposits (Amine)
+  // 1. IBKR deposits (Personne 1)
   (ibkr.deposits || []).forEach(d => {
-    addDeposit(d.date, d.label || 'Dépôt IBKR', 'Amine', 'IBKR', d.amount, d.currency, d.fxRateAtDate || 1);
+    addDeposit(d.date, d.label || 'Dépôt IBKR', 'Personne 1', 'IBKR', d.amount, d.currency, d.fxRateAtDate || 1);
   });
 
-  // 2. ESPP lots (Amine) — contribution from French salary in EUR
+  // 2. ESPP lots (Personne 1) — contribution from French salary in EUR
   // The ESPP buys ACN in USD, but the employee contributes from EUR salary
   // So the deposit is recorded in EUR (what was actually deducted from pay)
   (espp.lots || []).forEach(lot => {
     const costUSD = lot.shares * lot.costBasis;
     const fxRate = lot.fxRateAtDate || 1.15; // EUR/USD at purchase date
     const costEUR = costUSD / fxRate;
-    addDeposit(lot.date, 'ESPP ' + lot.shares + ' ACN @ $' + lot.costBasis.toFixed(0), 'Amine', 'ESPP (UBS)',
+    addDeposit(lot.date, 'ESPP ' + lot.shares + ' ACN @ $' + lot.costBasis.toFixed(0), 'Personne 1', 'ESPP (UBS)',
       Math.round(costEUR), 'EUR', 1);
   });
 
-  // 2b. ESPP Nezha — same logic (French salary → EUR)
+  // 2b. ESPP Personne 2 — same logic (French salary → EUR)
   (nezhaEsppData.lots || []).forEach(lot => {
     const costUSD = lot.shares * lot.costBasis;
     const fxRate = lot.fxRateAtDate || 1.10; // EUR/USD at purchase date (2023-2025)
     const costEUR = costUSD / fxRate;
-    addDeposit(lot.date, 'ESPP ' + lot.shares + ' ACN @ $' + lot.costBasis.toFixed(0), 'Nezha', 'ESPP (UBS)',
+    addDeposit(lot.date, 'ESPP ' + lot.shares + ' ACN @ $' + lot.costBasis.toFixed(0), 'Personne 2', 'ESPP (UBS)',
       Math.round(costEUR), 'EUR', 1);
   });
 
-  // 3. SGTM IPO — Amine + Nezha
+  // 3. SGTM IPO — Personne 1 + Personne 2
   const sgtmCost = portfolio.market.sgtmCostBasisMAD || 420;
-  [{ owner: 'Amine', shares: portfolio.amine.sgtm?.shares || 0 },
-   { owner: 'Nezha', shares: portfolio.nezha.sgtm?.shares || 0 }].forEach(s => {
+  [{ owner: 'Personne 1', shares: portfolio.amine.sgtm?.shares || 0 },
+   { owner: 'Personne 2', shares: portfolio.nezha.sgtm?.shares || 0 }].forEach(s => {
     if (s.shares <= 0) return;
     const costMAD = s.shares * sgtmCost;
     addDeposit('2025-12-15', 'IPO SGTM (' + s.shares + ' actions @ ' + sgtmCost + ' DH)', s.owner, 'Attijari (SGTM)',
@@ -327,7 +327,7 @@ function computeActionsView(portfolio, fx, stockSource, ibkrNAV, ibkrPositions, 
   const ibkrYtdPL = ibkrPositions.reduce((s, p) => s + (p.ytdPL || 0), 0) + closedYtdPL;
   const ibkrStartOfYear = totalPositionsVal - ibkrYtdPL;
   const ibkrYtdPct = ibkrStartOfYear > 0 ? (ibkrYtdPL / ibkrStartOfYear * 100) : 0;
-  // Total portfolio (IBKR + ESPP Amine + ESPP Nezha + SGTM)
+  // Total portfolio (IBKR + ESPP Personne 1 + ESPP Personne 2 + SGTM)
   const _acnYtdOpen = m.acnYtdOpen || 0;
   const _esppYtdPL = _acnYtdOpen > 0 ? esppCurrentVal - (espp.shares * _acnYtdOpen / (fx.USD || 1)) : 0;
   const _nezhaEsppYtdPL = (_acnYtdOpen > 0 && nezhaEsppShares > 0) ? nezhaEsppCurrentVal - (nezhaEsppShares * _acnYtdOpen / (fx.USD || 1)) : 0;
@@ -601,7 +601,7 @@ function computeActionsView(portfolio, fx, stockSource, ibkrNAV, ibkrPositions, 
     esppPrice: m.acnPriceUSD,
     esppCostBasisUSD, esppCostBasisEUR, esppCurrentVal, esppUnrealizedPL,
     esppCashEUR: espp.cashEUR,
-    // Nezha ESPP
+    // Personne 2 ESPP
     nezhaEsppVal: nezhaEsppCurrentVal,
     nezhaEsppShares: nezhaEsppShares,
     nezhaEsppCostBasisEUR: nezhaEsppCostBasisEUR,
@@ -662,7 +662,7 @@ function computeActionsView(portfolio, fx, stockSource, ibkrNAV, ibkrPositions, 
     periodPL: (() => {
       function sumField(field) { return ibkrPositions.reduce((s, p) => s + (p[field] || 0), 0); }
       function hasField(field) { return ibkrPositions.some(p => p[field] !== null && p[field] !== undefined); }
-      // ESPP period P&L (Amine + Nezha)
+      // ESPP period P&L (Personne 1 + Personne 2)
       function esppPeriod(refPrice) {
         if (!refPrice || refPrice <= 0) return 0;
         return esppCurrentVal - (espp.shares * refPrice / (fx.USD || 1));
@@ -738,31 +738,31 @@ function computeCashView(portfolio, fx) {
   }
 
   const accounts = [
-    { label: 'Mashreq NEO+', native: p.amine.uae.mashreq, currency: 'AED', yield: CASH_YIELDS.mashreq, owner: 'Amine' },
-    { label: 'Wio Savings', native: p.amine.uae.wioSavings, currency: 'AED', yield: CASH_YIELDS.wioSavings, owner: 'Amine' },
-    { label: 'Wio Current', native: p.amine.uae.wioCurrent, currency: 'AED', yield: CASH_YIELDS.wioCurrent, owner: 'Amine' },
-    { label: 'Revolut EUR', native: p.amine.uae.revolutEUR, currency: 'EUR', yield: CASH_YIELDS.revolutEUR, owner: 'Amine' },
-    { label: 'Attijariwafa', native: p.amine.maroc.attijari, currency: 'MAD', yield: CASH_YIELDS.attijari, owner: 'Amine' },
-    { label: 'Nabd (ex-SOGE)', native: p.amine.maroc.nabd, currency: 'MAD', yield: CASH_YIELDS.nabd, owner: 'Amine' },
+    { label: 'Mashreq NEO+', native: p.amine.uae.mashreq, currency: 'AED', yield: CASH_YIELDS.mashreq, owner: 'Personne 1' },
+    { label: 'Wio Savings', native: p.amine.uae.wioSavings, currency: 'AED', yield: CASH_YIELDS.wioSavings, owner: 'Personne 1' },
+    { label: 'Wio Current', native: p.amine.uae.wioCurrent, currency: 'AED', yield: CASH_YIELDS.wioCurrent, owner: 'Personne 1' },
+    { label: 'Revolut EUR', native: p.amine.uae.revolutEUR, currency: 'EUR', yield: CASH_YIELDS.revolutEUR, owner: 'Personne 1' },
+    { label: 'Attijariwafa', native: p.amine.maroc.attijari, currency: 'MAD', yield: CASH_YIELDS.attijari, owner: 'Personne 1' },
+    { label: 'Nabd (ex-SOGE)', native: p.amine.maroc.nabd, currency: 'MAD', yield: CASH_YIELDS.nabd, owner: 'Personne 1' },
     // IBKR: premiers 10K€/10K$ à 0%, le reste au taux IBKR Pro
     { label: 'IBKR Cash EUR', native: p.amine.ibkr.cashEUR, currency: 'EUR',
       yield: ibkrEffectiveYield(p.amine.ibkr.cashEUR, CASH_YIELDS.ibkrCashEUR, IBKR_CONFIG.cashThreshold),
-      owner: 'Amine' },
+      owner: 'Personne 1' },
     { label: 'IBKR Cash USD', native: p.amine.ibkr.cashUSD, currency: 'USD',
       yield: ibkrEffectiveYield(p.amine.ibkr.cashUSD, CASH_YIELDS.ibkrCashUSD, IBKR_CONFIG.cashThreshold),
-      owner: 'Amine' },
+      owner: 'Personne 1' },
     // IBKR JPY short: taux par tranche (tiered margin rate)
     { label: 'IBKR Cash JPY', native: p.amine.ibkr.cashJPY, currency: 'JPY',
       yield: ibkrJPYBorrowCost(Math.abs(p.amine.ibkr.cashJPY)),
-      owner: 'Amine', isDebt: true },
-    { label: 'ESPP Cash', native: p.amine.espp.cashEUR, currency: 'EUR', yield: CASH_YIELDS.esppCash, owner: 'Amine' },
-    // Nezha — comptes détaillés
-    { label: 'Revolut EUR (Nezha)', native: p.nezha.cash.revolutEUR, currency: 'EUR', yield: CASH_YIELDS.nezhaRevolutEUR, owner: 'Nezha' },
-    { label: 'Crédit Mutuel', native: p.nezha.cash.creditMutuelCC, currency: 'EUR', yield: CASH_YIELDS.nezhaCreditMutuel, owner: 'Nezha' },
-    { label: 'Livret A (LCL)', native: p.nezha.cash.lclLivretA, currency: 'EUR', yield: CASH_YIELDS.nezhaLivretA, owner: 'Nezha' },
-    { label: 'LCL Dépôts', native: p.nezha.cash.lclCompteDepots, currency: 'EUR', yield: CASH_YIELDS.nezhaLclDepots, owner: 'Nezha' },
-    { label: 'Attijariwafa (Nezha)', native: p.nezha.cash.attijariwafarMAD, currency: 'MAD', yield: CASH_YIELDS.nezhaAttijariMAD, owner: 'Nezha' },
-    { label: 'Wio UAE (Nezha)', native: p.nezha.cash.wioAED, currency: 'AED', yield: CASH_YIELDS.nezhaWioAED, owner: 'Nezha' },
+      owner: 'Personne 1', isDebt: true },
+    { label: 'ESPP Cash', native: p.amine.espp.cashEUR, currency: 'EUR', yield: CASH_YIELDS.esppCash, owner: 'Personne 1' },
+    // Personne 2 — comptes détaillés
+    { label: 'Revolut EUR (Personne 2)', native: p.nezha.cash.revolutEUR, currency: 'EUR', yield: CASH_YIELDS.nezhaRevolutEUR, owner: 'Personne 2' },
+    { label: 'Crédit Mutuel', native: p.nezha.cash.creditMutuelCC, currency: 'EUR', yield: CASH_YIELDS.nezhaCreditMutuel, owner: 'Personne 2' },
+    { label: 'Livret A (LCL)', native: p.nezha.cash.lclLivretA, currency: 'EUR', yield: CASH_YIELDS.nezhaLivretA, owner: 'Personne 2' },
+    { label: 'LCL Dépôts', native: p.nezha.cash.lclCompteDepots, currency: 'EUR', yield: CASH_YIELDS.nezhaLclDepots, owner: 'Personne 2' },
+    { label: 'Attijariwafa (Personne 2)', native: p.nezha.cash.attijariwafarMAD, currency: 'MAD', yield: CASH_YIELDS.nezhaAttijariMAD, owner: 'Personne 2' },
+    { label: 'Wio UAE (Personne 2)', native: p.nezha.cash.wioAED, currency: 'AED', yield: CASH_YIELDS.nezhaWioAED, owner: 'Personne 2' },
   ];
 
   let totalCash = 0, totalYielding = 0, totalNonYielding = 0;
@@ -772,8 +772,8 @@ function computeCashView(portfolio, fx) {
 
   // Per-owner breakdown
   const byOwner = {
-    Amine:  { total: 0, yielding: 0, nonYielding: 0, weightedYieldSum: 0, accounts: [] },
-    Nezha:  { total: 0, yielding: 0, nonYielding: 0, weightedYieldSum: 0, accounts: [] },
+    Personne1:  { total: 0, yielding: 0, nonYielding: 0, weightedYieldSum: 0, accounts: [] },
+    Personne2:  { total: 0, yielding: 0, nonYielding: 0, weightedYieldSum: 0, accounts: [] },
   };
 
   accounts.forEach(a => {
@@ -800,7 +800,7 @@ function computeCashView(portfolio, fx) {
   });
 
   // Per-owner computed fields
-  ['Amine', 'Nezha'].forEach(name => {
+  ['Personne 1', 'Personne 2'].forEach(name => {
     const ow = byOwner[name];
     ow.avgYield = ow.total > 0 ? (ow.weightedYieldSum / ow.total) : 0;
     ow.netVsInflation = ow.weightedYieldSum - (ow.total * INFLATION_RATE); // gain - erosion
@@ -845,7 +845,7 @@ function computeCashView(portfolio, fx) {
   // 2. COMPTES DORMANTS PAR PROPRIÉTAIRE
   //    Détecte automatiquement tout compte < seuil rendement
   // ═══════════════════════════════════════════════════════
-  ['Nezha', 'Amine'].forEach(owner => {
+  ['Personne 2', 'Personne 1'].forEach(owner => {
     const dormant = accounts.filter(a => !a.isDebt && a.owner === owner && a.valEUR > 50 && (a.yield || 0) < PRODUCTIVE_THRESHOLD);
     if (dormant.length === 0) return;
     const totalDormant = dormant.reduce((s, a) => s + a.valEUR, 0);
@@ -1796,9 +1796,9 @@ function computeImmoView(portfolio, fx) {
     };
   }
 
-  properties.push(buildProperty('Vitry-sur-Seine', 'Amine', portfolio.amine.immo.vitry, IC.charges.vitry, 'vitry'));
-  properties.push(buildProperty('Rueil-Malmaison', 'Nezha', portfolio.nezha.immo.rueil, IC.charges.rueil, 'rueil'));
-  properties.push(buildProperty('Villejuif (VEFA)', 'Nezha', portfolio.nezha.immo.villejuif, IC.charges.villejuif, 'villejuif', true));
+  properties.push(buildProperty('Vitry-sur-Seine', 'Personne 1', portfolio.amine.immo.vitry, IC.charges.vitry, 'vitry'));
+  properties.push(buildProperty('Rueil-Malmaison', 'Personne 2', portfolio.nezha.immo.rueil, IC.charges.rueil, 'rueil'));
+  properties.push(buildProperty('Villejuif (VEFA)', 'Personne 2', portfolio.nezha.immo.villejuif, IC.charges.villejuif, 'villejuif', true));
 
   // ── Yearly interest schedule per loan (for fiscal simulation) ──
   function yearlyInterestFromSchedule(amortObj) {
@@ -2153,11 +2153,11 @@ function computeCreancesView(portfolio, fx) {
     };
   }
 
-  // Amine creances
-  (portfolio.amine.creances.items || []).forEach(c => allItems.push(processCreance(c, 'Amine')));
+  // Personne 1 creances
+  (portfolio.amine.creances.items || []).forEach(c => allItems.push(processCreance(c, 'Personne 1')));
 
-  // Nezha creances
-  (portfolio.nezha.creances ? portfolio.nezha.creances.items : []).forEach(c => allItems.push(processCreance(c, 'Nezha')));
+  // Personne 2 creances
+  (portfolio.nezha.creances ? portfolio.nezha.creances.items : []).forEach(c => allItems.push(processCreance(c, 'Personne 2')));
 
   const totalNominal = allItems.reduce((s, i) => s + i.amountEUR, 0);
   const totalExpected = allItems.reduce((s, i) => s + i.expectedValue, 0);
@@ -2514,13 +2514,13 @@ export function compute(portfolio, fx, stockSource = 'statique') {
     : 0;
   const nezhaVillejuifFutureEquity = Math.max(0, villejuifExitCosts ? villejuifExitCosts.netEquityAfterExit : nezhaVillejuifEquityBrute);
   const nezhaVillejuifReservation = !villejuifSigned ? (p.nezha.immo.villejuif.reservationFees || 0) : 0;
-  // Nezha cash — detailed accounts
+  // Personne 2 cash — detailed accounts
   const nc = p.nezha.cash;
   const nezhaCashFranceEUR = nc.revolutEUR + nc.creditMutuelCC + nc.lclLivretA + nc.lclCompteDepots;
   const nezhaCashMarocEUR = toEUR(nc.attijariwafarMAD, 'MAD', fx);
   const nezhaCashUAE_EUR = toEUR(nc.wioAED, 'AED', fx);
   const nezhaSgtm = toEUR(p.nezha.sgtm.shares * m.sgtmPriceMAD, 'MAD', fx);
-  // Nezha ESPP (Accenture via UBS)
+  // Personne 2 ESPP (Accenture via UBS)
   const nezhaEsppData = p.nezha.espp || {};
   const nezhaEsppShares = nezhaEsppData.shares || 0;
   const nezhaEspp = toEUR(nezhaEsppShares * m.acnPriceUSD, 'USD', fx);
@@ -2624,9 +2624,9 @@ export function compute(portfolio, fx, stockSource = 'statique') {
       label: 'Immobilier', color: '#b7791f',
       total: coupleImmoEquity,
       sub: [
-        { label: 'Vitry', val: amineVitryEquity, color: '#b7791f', owner: 'Amine' },
-        { label: 'Rueil', val: nezhaRueilEquity, color: '#e6a817', owner: 'Nezha' },
-        ...(villejuifSigned ? [{ label: 'Villejuif VEFA', val: nezhaVillejuifEquity, color: '#805a10', owner: 'Nezha' }] : []),
+        { label: 'Vitry', val: amineVitryEquity, color: '#b7791f', owner: 'Personne 1' },
+        { label: 'Rueil', val: nezhaRueilEquity, color: '#e6a817', owner: 'Personne 2' },
+        ...(villejuifSigned ? [{ label: 'Villejuif VEFA', val: nezhaVillejuifEquity, color: '#805a10', owner: 'Personne 2' }] : []),
       ]
     },
     {
@@ -2643,11 +2643,11 @@ export function compute(portfolio, fx, stockSource = 'statique') {
           const valEUR = toEUR(pos.shares * pos.price, pos.currency, fx);
           // Short label = company name without ticker
           const short = pos.label.replace(/\s*\(.*\)/, '');
-          return { label: short, val: valEUR, color: colors[i % colors.length], owner: 'Amine — IBKR', ticker: pos.ticker };
+          return { label: short, val: valEUR, color: colors[i % colors.length], owner: 'P1 — IBKR', ticker: pos.ticker };
         }),
-        { label: 'Cash IBKR', val: toEUR(p.amine.ibkr.cashEUR, 'EUR', fx) + toEUR(p.amine.ibkr.cashUSD, 'USD', fx) + toEUR(p.amine.ibkr.cashJPY, 'JPY', fx), color: '#1e40af', owner: 'Amine — IBKR' },
-        { label: 'ESPP Accenture', val: amineEspp + nezhaEspp, color: '#6366f1', owner: 'Amine + Nezha — ESPP' },
-        { label: 'SGTM', val: amineSgtm + nezhaSgtm, color: '#4f46e5', owner: 'Amine + Nezha — Maroc' },
+        { label: 'Cash IBKR', val: toEUR(p.amine.ibkr.cashEUR, 'EUR', fx) + toEUR(p.amine.ibkr.cashUSD, 'USD', fx) + toEUR(p.amine.ibkr.cashJPY, 'JPY', fx), color: '#1e40af', owner: 'P1 — IBKR' },
+        { label: 'ESPP Accenture', val: amineEspp + nezhaEspp, color: '#6366f1', owner: 'Personne 1 + Personne 2 — ESPP' },
+        { label: 'SGTM', val: amineSgtm + nezhaSgtm, color: '#4f46e5', owner: 'Personne 1 + Personne 2 — Maroc' },
       ].filter(s => s.val > 100)
     },
     {
@@ -2660,15 +2660,15 @@ export function compute(portfolio, fx, stockSource = 'statique') {
         const colors = ['#f59e0b','#d97706'];
         const valEUR = toEUR(pos.shares * pos.price, pos.currency, fx);
         const short = pos.label.replace(/\s*\(.*\)/, '');
-        return { label: short, val: valEUR, color: colors[i % colors.length], owner: 'Amine — IBKR' };
+        return { label: short, val: valEUR, color: colors[i % colors.length], owner: 'P1 — IBKR' };
       })
     },
     {
       label: 'Cash Productif', color: '#22c55e',
       total: toEUR(p.amine.uae.mashreq, 'AED', fx) + toEUR(p.amine.uae.wioSavings, 'AED', fx),
       sub: [
-        { label: 'Mashreq NEO+', val: toEUR(p.amine.uae.mashreq, 'AED', fx), color: '#22c55e', owner: 'Amine — 6.25%' },
-        { label: 'Wio Savings', val: toEUR(p.amine.uae.wioSavings, 'AED', fx), color: '#16a34a', owner: 'Amine — 6%' },
+        { label: 'Mashreq NEO+', val: toEUR(p.amine.uae.mashreq, 'AED', fx), color: '#22c55e', owner: 'P1 — 6.25%' },
+        { label: 'Wio Savings', val: toEUR(p.amine.uae.wioSavings, 'AED', fx), color: '#16a34a', owner: 'P1 — 6%' },
       ]
     },
     {
@@ -2676,33 +2676,33 @@ export function compute(portfolio, fx, stockSource = 'statique') {
       total: (p.amine.uae.wioCurrent > 0 ? toEUR(p.amine.uae.wioCurrent, 'AED', fx) : 0) + amineRevolutEUR + amineMoroccoCash
         + nc.revolutEUR + nc.creditMutuelCC + nc.lclLivretA + nc.lclCompteDepots + nezhaCashMarocEUR + nezhaCashUAE_EUR,
       sub: [
-        ...(nc.revolutEUR > 0 ? [{ label: 'Revolut (Nezha)', val: nc.revolutEUR, color: '#ef4444', owner: 'Nezha — 0%' }] : []),
-        ...(nc.creditMutuelCC > 0 ? [{ label: 'Crédit Mutuel', val: nc.creditMutuelCC, color: '#dc2626', owner: 'Nezha — 0%' }] : []),
-        ...(nc.lclLivretA > 0 ? [{ label: 'Livret A (LCL)', val: nc.lclLivretA, color: '#f87171', owner: 'Nezha — 1.5%' }] : []),
-        ...(nc.lclCompteDepots > 0 ? [{ label: 'LCL Dépôts', val: nc.lclCompteDepots, color: '#b91c1c', owner: 'Nezha — 0%' }] : []),
-        ...(nezhaCashMarocEUR > 0 ? [{ label: 'Attijariwafa (Nezha)', val: nezhaCashMarocEUR, color: '#991b1b', owner: 'Nezha — 0%' }] : []),
-        ...(nezhaCashUAE_EUR > 0 ? [{ label: 'Wio UAE (Nezha)', val: nezhaCashUAE_EUR, color: '#7f1d1d', owner: 'Nezha — 0%' }] : []),
-        ...(amineMoroccoCash > 0 ? [{ label: 'Cash Maroc (Amine)', val: amineMoroccoCash, color: '#f87171', owner: 'Amine — 0%' }] : []),
-        ...(p.amine.uae.wioCurrent > 0 ? [{ label: 'Wio Current', val: toEUR(p.amine.uae.wioCurrent, 'AED', fx), color: '#fca5a5', owner: 'Amine — 0%' }] : []),
-        ...(amineRevolutEUR > 0 ? [{ label: 'Revolut EUR (Amine)', val: amineRevolutEUR, color: '#fecaca', owner: 'Amine — 0%' }] : []),
+        ...(nc.revolutEUR > 0 ? [{ label: 'Revolut (Personne 2)', val: nc.revolutEUR, color: '#ef4444', owner: 'P2 — 0%' }] : []),
+        ...(nc.creditMutuelCC > 0 ? [{ label: 'Crédit Mutuel', val: nc.creditMutuelCC, color: '#dc2626', owner: 'P2 — 0%' }] : []),
+        ...(nc.lclLivretA > 0 ? [{ label: 'Livret A (LCL)', val: nc.lclLivretA, color: '#f87171', owner: 'P2 — 1.5%' }] : []),
+        ...(nc.lclCompteDepots > 0 ? [{ label: 'LCL Dépôts', val: nc.lclCompteDepots, color: '#b91c1c', owner: 'P2 — 0%' }] : []),
+        ...(nezhaCashMarocEUR > 0 ? [{ label: 'Attijariwafa (Personne 2)', val: nezhaCashMarocEUR, color: '#991b1b', owner: 'P2 — 0%' }] : []),
+        ...(nezhaCashUAE_EUR > 0 ? [{ label: 'Wio UAE (Personne 2)', val: nezhaCashUAE_EUR, color: '#7f1d1d', owner: 'P2 — 0%' }] : []),
+        ...(amineMoroccoCash > 0 ? [{ label: 'Cash Maroc (Personne 1)', val: amineMoroccoCash, color: '#f87171', owner: 'P1 — 0%' }] : []),
+        ...(p.amine.uae.wioCurrent > 0 ? [{ label: 'Wio Current', val: toEUR(p.amine.uae.wioCurrent, 'AED', fx), color: '#fca5a5', owner: 'P1 — 0%' }] : []),
+        ...(amineRevolutEUR > 0 ? [{ label: 'Revolut EUR (Personne 1)', val: amineRevolutEUR, color: '#fecaca', owner: 'P1 — 0%' }] : []),
       ]
     },
     {
       label: 'Vehicules', color: '#64748b',
       total: amineVehicles,
       sub: [
-        { label: 'Cayenne', val: p.amine.vehicles.cayenne, color: '#64748b', owner: 'Amine' },
-        { label: 'Mercedes A', val: p.amine.vehicles.mercedes, color: '#475569', owner: 'Amine' },
+        { label: 'Cayenne', val: p.amine.vehicles.cayenne, color: '#64748b', owner: 'Personne 1' },
+        { label: 'Mercedes A', val: p.amine.vehicles.mercedes, color: '#475569', owner: 'Personne 1' },
       ]
     },
     {
       label: 'Creances', color: '#ec4899',
       total: amineRecvPro + amineRecvPersonal + nezhaRecvOmar + nezhaVillejuifReservation,
       sub: [
-        { label: 'Créances pro', val: amineRecvPro, color: '#ec4899', owner: 'Amine — SAP, Malt, Loyers' },
-        { label: 'Créances perso', val: amineRecvPersonal, color: '#db2777', owner: 'Amine — Kenza, Mehdi, etc.' },
-        { label: 'Creance Omar', val: nezhaRecvOmar, color: '#be185d', owner: 'Nezha' },
-        ...(!villejuifSigned && nezhaVillejuifReservation > 0 ? [{ label: 'Reservation Villejuif', val: nezhaVillejuifReservation, color: '#f472b6', owner: 'Nezha — remboursable' }] : []),
+        { label: 'Créances pro', val: amineRecvPro, color: '#ec4899', owner: 'P1 — SAP, Malt, Loyers' },
+        { label: 'Créances perso', val: amineRecvPersonal, color: '#db2777', owner: 'P1 — Kenza, Mehdi, etc.' },
+        { label: 'Creance Omar', val: nezhaRecvOmar, color: '#be185d', owner: 'Personne 2' },
+        ...(!villejuifSigned && nezhaVillejuifReservation > 0 ? [{ label: 'Reservation Villejuif', val: nezhaVillejuifReservation, color: '#f472b6', owner: 'P2 — remboursable' }] : []),
       ]
     },
   ];
@@ -2711,7 +2711,7 @@ export function compute(portfolio, fx, stockSource = 'statique') {
   const views = {
     couple: {
       title: 'Dashboard Patrimonial',
-      subtitle: 'Amine (33 ans) & Nezha (34 ans) Koraibi \u2014 Vue consolidee',
+      subtitle: 'Personne 1 (33 ans) & Personne 2 (34 ans) Exemple \u2014 Vue consolidee',
       stocks:    { val: amineIbkr + amineEspp + nezhaEspp + amineSgtm + nezhaSgtm, sub: 'IBKR + ESPP x2 + SGTM x2' },
       cash:      { val: amineCashTotal + nezhaCash, sub: 'UAE + France + Maroc' },
       immo:      { val: coupleImmoEquity, sub: nbBiens + ' biens \u2014 Equity nette' },
@@ -2720,8 +2720,8 @@ export function compute(portfolio, fx, stockSource = 'statique') {
       showStocks: true, showCash: true, showOther: true,
     },
     amine: {
-      title: 'Dashboard \u2014 Amine Koraibi',
-      subtitle: 'Amine Koraibi, 33 ans \u2014 Actions, Crypto, Immobilier, Cash',
+      title: 'Dashboard \u2014 Personne 1',
+      subtitle: 'Personne 1, 33 ans \u2014 Actions, Crypto, Immobilier, Cash',
       stocks:    { val: amineIbkr + amineEspp + amineSgtm, sub: 'IBKR + ESPP + SGTM' },
       cash:      { val: amineCashTotal, sub: 'UAE + Revolut + Maroc' },
       immo:      { val: amineVitryEquity, sub: '1 bien \u2014 Vitry' },
@@ -2730,8 +2730,8 @@ export function compute(portfolio, fx, stockSource = 'statique') {
       showStocks: true, showCash: true, showOther: true,
     },
     nezha: {
-      title: 'Dashboard \u2014 Nezha Kabbaj',
-      subtitle: 'Nezha Kabbaj, 34 ans \u2014 Immobilier',
+      title: 'Dashboard \u2014 Personne 2',
+      subtitle: 'Personne 2, 34 ans \u2014 Immobilier',
       stocks:    { val: nezhaSgtm + nezhaEspp, sub: 'ESPP (' + nezhaEsppShares + ' ACN) + SGTM' },
       cash:      { val: nezhaCash, sub: Math.round(nezhaCashFranceEUR/1000) + 'K France + ' + Math.round(nezhaCashMarocEUR/1000) + 'K Maroc + ' + Math.round(nezhaCashUAE_EUR/1000) + 'K UAE' },
       immo:      { val: nezhaRueilEquity + nezhaVillejuifEquity, sub: villejuifSigned ? '2 biens \u2014 Rueil + Villejuif' : '1 bien \u2014 Rueil' },
@@ -2876,10 +2876,10 @@ export function compute(portfolio, fx, stockSource = 'statique') {
     const pal = geoColorSubs[geo] || ['#94a3b8'];
     geoGroups[geo].push({ label: short, val: valEUR, color: pal[palIdx % pal.length], owner: 'IBKR', ticker: pos.ticker });
   });
-  // Add ESPP (merged Amine + Nezha) to US
+  // Add ESPP (merged Personne 1 + Personne 2) to US
   if (!geoGroups['us']) geoGroups['us'] = [];
   geoGroups['us'].push({ label: 'ESPP Accenture', val: amineEspp + nezhaEspp, color: '#10b981', owner: 'ESPP' });
-  // Add SGTM (merged Amine + Nezha) to Morocco
+  // Add SGTM (merged Personne 1 + Personne 2) to Morocco
   if (!geoGroups['morocco']) geoGroups['morocco'] = [];
   geoGroups['morocco'].push({ label: 'SGTM', val: amineSgtm + nezhaSgtm, color: '#ca8a04', owner: 'Maroc' });
   // Add IBKR Cash

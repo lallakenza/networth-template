@@ -645,7 +645,7 @@ function runNezhaSimulator(state) {
 
   const totalGrowth = finalNW - s.nezha.nw;
   document.getElementById('nzSimInsight').innerHTML =
-    '<strong>Resume :</strong> NW Nezha : <strong>' + fmt(s.nezha.nw) + '</strong> &rarr; <strong>' + fmt(finalNW) + '</strong> en ' + horizonYears + ' ans (+' + fmt(Math.round(totalGrowth)) + ').<br>' +
+    '<strong>Resume :</strong> NW Personne 2 : <strong>' + fmt(s.nezha.nw) + '</strong> &rarr; <strong>' + fmt(finalNW) + '</strong> en ' + horizonYears + ' ans (+' + fmt(Math.round(totalGrowth)) + ').<br>' +
     'Rueil : ' + fmt(finalRueil) + ' | Villejuif : ' + fmt(finalVillejuif) + ' | Cash : ' + fmt(finalCash) + '.<br>' +
     '<strong>Croissance moyenne : +' + fmt(Math.round(totalGrowth / horizonYears)) + '/an</strong> via remboursement des prets' +
     (appreciation > 0 ? ' + appreciation ' + (appreciation * 100).toFixed(1) + '%/an.' : '.');

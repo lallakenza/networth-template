@@ -160,7 +160,7 @@ function renderHeader(state, view) {
   } else {
     // Asset views
     const titles = { actions: 'Cockpit Actions & Crypto', cash: 'Tr\u00e9sorerie & Cash', immobilier: 'Portefeuille Immobilier', creances: 'Cr\u00e9ances & Recouvrements', budget: 'Budget Mensuel', apt_vitry: 'Vitry-sur-Seine', apt_rueil: 'Rueil-Malmaison', apt_villejuif: 'Villejuif (VEFA)' };
-    const subs = { actions: 'Toutes les positions actions, crypto, ETFs — IBKR + ESPP + SGTM', cash: 'Vue consolid\u00e9e de tous les comptes cash — Amine & Nezha', immobilier: '3 biens immobiliers — Vitry, Rueil, Villejuif', creances: 'Cr\u00e9ances actives — analyse de recouvrement et co\u00fbt d\'opportunit\u00e9', budget: 'D\u00e9penses fixes — Dubai, France, Digital', apt_vitry: '19 Rue Nathalie Lemel — T3 Location nue', apt_rueil: '21 All\u00e9e des Glycines — T3 meubl\u00e9 LMNP', apt_villejuif: '167 Bd Maxime Gorki — T3 VEFA' };
+    const subs = { actions: 'Toutes les positions actions, crypto, ETFs — IBKR + ESPP + SGTM', cash: 'Vue consolid\u00e9e de tous les comptes cash — Personne 1 & Personne 2', immobilier: '3 biens immobiliers — Vitry, Rueil, Villejuif', creances: 'Cr\u00e9ances actives — analyse de recouvrement et co\u00fbt d\'opportunit\u00e9', budget: 'D\u00e9penses fixes — France, France, Digital', apt_vitry: '19 Rue Nathalie Lemel — T3 Location nue', apt_rueil: '21 All\u00e9e des Glycines — T3 meubl\u00e9 LMNP', apt_villejuif: '167 Bd Maxime Gorki — T3 VEFA' };
     if (titleEl) titleEl.textContent = titles[view] || '';
     if (subEl) subEl.textContent = subs[view] || '';
   }
@@ -224,7 +224,7 @@ function renderKPIs(state, view) {
   setEur('kpiNzVillejuif', s.nezha.villejuifEquity);
   setEur('kpiNzCash', s.nezha.cash + s.nezha.recvOmar);
 
-  // Amine detail KPIs
+  // Personne 1 detail KPIs
   setEur('kpiAmIBKR', s.amine.ibkr);
   setEur('kpiAmESPP', s.amine.espp);
   setEur('kpiAmSGTM', s.amine.sgtm);
@@ -315,10 +315,10 @@ function renderExpandSubs(state, view) {
   } else {
     // couple: show all
     (p.amine.creances.items || []).forEach(c => {
-      creanceItems.push({ label: c.label, eur: toEUR(c.amount, c.currency), guaranteed: c.guaranteed, owner: 'Amine' });
+      creanceItems.push({ label: c.label, eur: toEUR(c.amount, c.currency), guaranteed: c.guaranteed, owner: 'Personne 1' });
     });
     (p.nezha.creances && p.nezha.creances.items || []).forEach(c => {
-      creanceItems.push({ label: c.label, eur: toEUR(c.amount, c.currency), guaranteed: c.guaranteed, owner: 'Nezha' });
+      creanceItems.push({ label: c.label, eur: toEUR(c.amount, c.currency), guaranteed: c.guaranteed, owner: 'Personne 2' });
     });
   }
 
@@ -356,8 +356,8 @@ function renderExpandSubs(state, view) {
 
   // ESPP detail label
   const srcLabel = state.stockSource === 'live' ? ' (live)' : ' (statique)';
-  setHTML('subESPPDetail', (p.amine.espp.shares + (p.nezha.espp ? p.nezha.espp.shares : 0)) + ' actions ACN @ $' + p.market.acnPriceUSD.toFixed(0) + srcLabel + ' (Amine ' + p.amine.espp.shares + ' + Nezha ' + (p.nezha.espp ? p.nezha.espp.shares : 0) + ')');
-  setHTML('subSGTMDetail', (p.amine.sgtm.shares + p.nezha.sgtm.shares) + ' actions @ ' + p.market.sgtmPriceMAD + ' DH (Amine + Nezha)<br>Bourse de Casablanca');
+  setHTML('subESPPDetail', (p.amine.espp.shares + (p.nezha.espp ? p.nezha.espp.shares : 0)) + ' actions ACN @ $' + p.market.acnPriceUSD.toFixed(0) + srcLabel + ' (Personne 1 ' + p.amine.espp.shares + ' + Personne 2 ' + (p.nezha.espp ? p.nezha.espp.shares : 0) + ')');
+  setHTML('subSGTMDetail', (p.amine.sgtm.shares + p.nezha.sgtm.shares) + ' actions @ ' + p.market.sgtmPriceMAD + ' DH (Personne 1 + Personne 2)<br>Bourse de Casablanca');
 
   // SGTM performance badge (vs IPO cost basis)
   const sgtmPerf = p.market.sgtmCostBasisMAD
@@ -472,9 +472,9 @@ function renderExpandSubs(state, view) {
     if (immoTbody) {
       let html = '';
       const propMeta = {
-        vitry: { desc: '67 m2 \u2014 loyer 1,050 HC + 150 charges + 70 parking', owner: 'Amine', status: 'Loue', statusBg: '#c6f6d5', statusColor: '#276749' },
-        rueil: { desc: '56 m2 \u2014 loyer 1,300 HC + 150 charges (bail oct 2025)', owner: 'Nezha', status: 'Loue', statusBg: '#c6f6d5', statusColor: '#276749', rowBg: 'background:#f0f5ff' },
-        villejuif: { desc: 'Conditionnel \u2014 acte non signe', owner: 'Nezha', status: 'Conditionnel', statusBg: '#fef3c7', statusColor: '#92400e', descColor: '#92400e' },
+        vitry: { desc: '67 m2 \u2014 loyer 1,050 HC + 150 charges + 70 parking', owner: 'Personne 1', status: 'Loue', statusBg: '#c6f6d5', statusColor: '#276749' },
+        rueil: { desc: '56 m2 \u2014 loyer 1,300 HC + 150 charges (bail oct 2025)', owner: 'Personne 2', status: 'Loue', statusBg: '#c6f6d5', statusColor: '#276749', rowBg: 'background:#f0f5ff' },
+        villejuif: { desc: 'Conditionnel \u2014 acte non signe', owner: 'Personne 2', status: 'Conditionnel', statusBg: '#fef3c7', statusColor: '#92400e', descColor: '#92400e' },
       };
       iv.properties.forEach(prop => {
         const meta = propMeta[prop.loanKey] || {};
@@ -569,8 +569,8 @@ function renderDynamicInsights(state, view) {
     cplPos.innerHTML =
       '<strong>Points forts du couple :</strong><br>' +
       '- NW combine de ' + K(nw) + ' a 33 et 34 ans \u2014 excellent rythme de constitution patrimoniale pour un couple.<br>' +
-      '- Revenus diversifies : salaire Amine (Dubai) + patrimoine locatif Nezha (France). Deux pays, deux sources de revenus.<br>' +
-      '- Cash couple total ~' + K(cashCouple) + ' (Amine ' + K(cashAmine) + ' + Nezha ' + K(cashNezha) + ') reparti sur 2 devises et plusieurs banques. Bonne resilience en cas de blocage bancaire.<br>' +
+      '- Revenus diversifies : salaire Personne 1 (France) + patrimoine locatif Personne 2 (France). Deux pays, deux sources de revenus.<br>' +
+      '- Cash couple total ~' + K(cashCouple) + ' (Personne 1 ' + K(cashPersonne 1) + ' + Personne 2 ' + K(cashNezha) + ') reparti sur 2 devises et plusieurs banques. Bonne resilience en cas de blocage bancaire.<br>' +
       '- Zero dette consommation. Les ' + K(totalDebt) + ' de dette sont 100% adosses a des actifs immo productifs (' + K(totalImmoVal) + ' de valeur).';
   }
 
@@ -591,19 +591,19 @@ function renderDynamicInsights(state, view) {
     cplRisks.innerHTML =
       '<strong>Risques & points d\'attention couple :</strong><br>' +
       '- <strong>Concentration immo IDF :</strong> ' + iv.properties.length + ' biens, ' + K(totalImmoVal) + ' de valeur, 100% en Ile-de-France. Zero diversification geo. Un retournement IDF de -10% = -' + K(totalImmoVal * 0.1) + ' d\'equity couple.<br>' +
-      '- <strong>Exposition devise :</strong> Le couple est multi-devise \u2014 ~' + K(cashAmine) + ' en AED/USD (Amine) + ~' + K(cashNezha) + ' en EUR/MAD (Nezha). Le risque USD/EUR est reel (~' + aedPct + '% du cash total en AED).<br>' +
+      '- <strong>Exposition devise :</strong> Le couple est multi-devise \u2014 ~' + K(cashPersonne 1) + ' en AED/USD (Personne 1) + ~' + K(cashNezha) + ' en EUR/MAD (Personne 2). Le risque USD/EUR est reel (~' + aedPct + '% du cash total en AED).<br>' +
       '- <strong>Creances (' + K(totalCreances) + ') :</strong> ' + K(guarCreances) + ' garanti (delai de paiement 45 jours \u2014 quasi-cash) + creances perso ' + K(persoCreances) + ' (recouvrement incertain). Ne compter que les ' + K(guarCreances) + ' dans la planification.<br>' +
-      '- <strong>Levier JPY (Amine) :</strong> Emprunt -' + (jpyShort / 1000000).toFixed(1) + 'M JPY (~' + K(jpyEUR) + ' EUR) sur IBKR. Une appreciation du yen de 10% couterait ~' + K(jpyEUR * 0.1) + '.';
+      '- <strong>Levier JPY (Personne 1) :</strong> Emprunt -' + (jpyShort / 1000000).toFixed(1) + 'M JPY (~' + K(jpyEUR) + ' EUR) sur IBKR. Une appreciation du yen de 10% couterait ~' + K(jpyEUR * 0.1) + '.';
   }
 
-  // ── Amine immo insight ──
+  // ── Personne 1 immo insight ──
   const amImmo = document.getElementById('amineImmoInsight');
   if (amImmo && iv) {
     const vitryP = iv.properties.find(pr => pr.loanKey === 'vitry');
     if (vitryP) {
       const wealthMonth = vitryP.wealthCreation || 0;
       amImmo.innerHTML =
-        '<strong>Immobilier Amine :</strong><br>' +
+        '<strong>Immobilier Personne 1 :</strong><br>' +
         '- <span style="color:var(--green)">Vitry genere +' + N(wealthMonth) + '/mois de creation de richesse</span>. Excellent levier malgre le CF negatif.<br>' +
         '- <strong>CF = ' + (vitryP.cf >= 0 ? '+' : '') + Math.round(vitryP.cf) + '/mois</strong> (revenus ' + N(vitryP.totalRevenue || vitryP.revenue || 0) + ' CC vs charges ' + N(vitryP.charges) + ').<br>' +
         '- Explorer le passage en LMNP reel \u2014 les charges deductibles pourraient reduire l\'imposition a zero.';
@@ -616,7 +616,7 @@ function renderDynamicInsights(state, view) {
     ibkrBox.innerHTML = '<strong>IBKR :</strong> NAV ' + fmt(s.amine.ibkr) + ', depots ' + N(p.amine.ibkr.meta.deposits) + '. TWR ' + (p.amine.ibkr.meta.twr || 0).toFixed(2) + '% depuis ouverture.';
   }
 
-  // ── Amine actions insight ──
+  // ── Personne 1 actions insight ──
   const amAct = document.getElementById('amineActionsInsight');
   if (amAct) {
     const jpyShort = Math.abs(p.amine.ibkr.cashJPY || 0);
@@ -638,7 +638,7 @@ function renderDynamicInsights(state, view) {
       '- <span style="color:var(--green)">Deleverage JPY :</span> Short JPY reduit a -' + (jpyShort / 1000000).toFixed(1) + 'M JPY (~' + K(jpyEUR) + ' EUR).';
   }
 
-  // ── Nezha insights ──
+  // ── Personne 2 insights ──
   const nzBox = document.getElementById('nezhaInsightsBox');
   if (nzBox && iv) {
     const rueilP = iv.properties.find(pr => pr.loanKey === 'rueil');
@@ -653,15 +653,15 @@ function renderDynamicInsights(state, view) {
     const totalMens = rueilMens + vilMens;
     nzBox.innerHTML =
       '<strong>Profil :</strong> Patrimoine 100% immobilier + cash. ' + K(cashFR) + ' en France (dont une partie pour apport Villejuif). Credit debloque fin 2026, franchise totale 3 ans, livraison ete 2029.<br><br>' +
-      '<strong>Insights Nezha :</strong><br>' +
+      '<strong>Insights Personne 2 :</strong><br>' +
       '- <span style="color:var(--green)">NW de ' + K(nzNW) + ' dont ' + K(rueilP ? rueilP.equity : 0) + ' en equity immo Rueil = patrimoine solide et croissant en automatique.</span><br>' +
       '- <span style="color:var(--green)">Rueil : auto-finance (' + rueilCF + '/mois de CF positif)</span>. ' + N(rueilWealth) + '/mois de creation de richesse, zero effort financier.<br>' +
       '- Cash total ~' + K(cashFR + cashMA) + ' (' + K(cashFR) + ' France + ' + K(cashMA) + ' Maroc).<br>' +
-      '- <span style="color:var(--red)">Risque post-livraison :</span> Nezha portera ~' + N(totalMens) + '/mois de mensualites (Rueil ' + N(rueilMens) + ' + Villejuif ~' + N(vilMens) + ').<br>' +
+      '- <span style="color:var(--red)">Risque post-livraison :</span> Personne 2 portera ~' + N(totalMens) + '/mois de mensualites (Rueil ' + N(rueilMens) + ' + Villejuif ~' + N(vilMens) + ').<br>' +
       '- <span style="color:var(--green)">Apres livraison :</span> 2 biens de creation de richesse.';
   }
 
-  // ── Nezha projection table ──
+  // ── Personne 2 projection table ──
   const nzProj = document.getElementById('nezhaProjectionTable');
   if (nzProj && iv) {
     // Simple projection based on current amortization schedules
@@ -708,7 +708,7 @@ function renderDynamicInsights(state, view) {
     });
     html += '</tr>';
     // Total row
-    html += '<tr style="font-weight:700;background:#edf2f7"><td><strong>Total Nezha</strong></td>';
+    html += '<tr style="font-weight:700;background:#edf2f7"><td><strong>Total Personne 2</strong></td>';
     years.forEach(y => {
       const m = monthsFromNow(y);
       const eqR = rueilP ? rueilP.equity + rueilGrowth * m : 0;
@@ -743,17 +743,17 @@ function renderCoupleTable(state) {
   const p = state.portfolio;
   const rows = [
     ['Actions & ETFs (IBKR + ' + (p.amine.espp.shares + (p.nezha.espp ? p.nezha.espp.shares : 0)) + ' ACN + ' + (p.amine.sgtm.shares + p.nezha.sgtm.shares) + ' SGTM)', s.amine.ibkr + s.amine.espp + s.nezha.espp + s.amine.sgtm + s.nezha.sgtm],
-    ['Cash EUR (Nezha France + Revolut Amine)', s.nezha.cashFrance + s.amine.revolutEUR],
-    ['Cash MAD (Nezha ' + Math.round(s.nezha.cashMarocMAD).toLocaleString('fr-FR') + ' + Amine ' + Math.round(s.amine.moroccoMAD).toLocaleString('fr-FR') + ' MAD)', s.nezha.cashMaroc + s.amine.moroccoCash],
-    ['Cash AED (Amine UAE + Nezha Wio ' + Math.round(s.nezha.cashUAE_AED).toLocaleString('fr-FR') + ' AED)', s.amine.uae + s.nezha.cashUAE],
-    ['Equity Immo \u2014 Vitry (Amine)', s.amine.vitryEquity],
-    ['Equity Immo \u2014 Rueil (Nezha)', s.nezha.rueilEquity],
-    ['Equity Immo \u2014 Villejuif VEFA (Nezha) [conditionnel]', s.nezha.villejuifEquity],
+    ['Cash EUR (Personne 2 France + Revolut Personne 1)', s.nezha.cashFrance + s.amine.revolutEUR],
+    ['Cash MAD (Personne 2 ' + Math.round(s.nezha.cashMarocMAD).toLocaleString('fr-FR') + ' + Personne 1 ' + Math.round(s.amine.moroccoMAD).toLocaleString('fr-FR') + ' MAD)', s.nezha.cashMaroc + s.amine.moroccoCash],
+    ['Cash AED (Personne 1 UAE + Personne 2 Wio ' + Math.round(s.nezha.cashUAE_AED).toLocaleString('fr-FR') + ' AED)', s.amine.uae + s.nezha.cashUAE],
+    ['Equity Immo \u2014 Vitry (Personne 1)', s.amine.vitryEquity],
+    ['Equity Immo \u2014 Rueil (Personne 2)', s.nezha.rueilEquity],
+    ['Equity Immo \u2014 Villejuif VEFA (Personne 2) [conditionnel]', s.nezha.villejuifEquity],
     ['Vehicules (Porsche Cayenne + Mercedes A)', s.amine.vehicles],
     ['Creances SAP & Tax (garanti, 45j)', s.amine.recvPro],
-    ['Creances personnelles Amine (recouvrement incertain)', s.amine.recvPersonal],
-    ['Creance Omar \u2014 Nezha (40K MAD)', s.nezha.recvOmar],
-    ['TVA a payer (Amine)', s.amine.tva],
+    ['Creances personnelles Personne 1 (recouvrement incertain)', s.amine.recvPersonal],
+    ['Creance Omar \u2014 Personne 2 (40K MAD)', s.nezha.recvOmar],
+    ['TVA a payer (Personne 1)', s.amine.tva],
   ];
   buildDetailTable('#coupleDetailTable tbody', rows, 'Net Worth Couple');
 }
@@ -810,7 +810,7 @@ function renderNezhaTable(state, view) {
   // NW actuel
   let tr = document.createElement('tr');
   tr.style.fontWeight = '700'; tr.style.background = '#edf2f7';
-  tr.innerHTML = '<td><strong>Net Worth Nezha (actuel)</strong></td><td class="num"><strong>' + fmt(total) + '</strong></td>';
+  tr.innerHTML = '<td><strong>Net Worth Personne 2 (actuel)</strong></td><td class="num"><strong>' + fmt(total) + '</strong></td>';
   tbody.appendChild(tr);
 
   // Only show Villejuif section in immobilier and property-specific views
@@ -1197,7 +1197,7 @@ function renderAllPositions(allPositions, sortKey, sortDir) {
           else if (t.currency === 'JPY' && _fx.JPY) costEUR = t.cost / _fx.JPY;
           const plEUR = valEUR - costEUR;
           const plPct = costEUR > 0 ? ((valEUR / costEUR - 1) * 100) : null;
-          return { ...t, valEUR, costEUR, plEUR, plPct, owner: t.owner || 'Amine' };
+          return { ...t, valEUR, costEUR, plEUR, plPct, owner: t.owner || 'Personne 1' };
         });
         const hasMultiOwner = new Set(enriched.map(t => t.owner)).size > 1;
 
@@ -1535,20 +1535,20 @@ function renderActionsView(state) {
     mtdPct: pctFromRef(p.price, p.mtdOpen),
     ytdPct: pctFromRef(p.price, p.ytdOpen),
     oneMonthPct: pctFromRef(p.price, p.oneMonthAgo),
-    _trades: allTrades.filter(t => t.ticker === p.ticker).map(t => ({ ...t, owner: 'Amine' })),
+    _trades: allTrades.filter(t => t.ticker === p.ticker).map(t => ({ ...t, owner: 'Personne 1' })),
   }));
 
-  // ESPP Accenture (Amine + Nezha merged) — build trade history from lots
+  // ESPP Accenture (Personne 1 + Personne 2 merged) — build trade history from lots
   const p = state.portfolio;
   const esppLotsAmine = (p.amine.espp.lots || []).map(l => ({
     date: l.date, type: 'buy', ticker: 'ACN', qty: l.shares,
     costBasis: l.costBasis, currency: 'USD', cost: l.shares * l.costBasis,
-    label: 'ESPP (' + l.source + ')', owner: 'Amine',
+    label: 'ESPP (' + l.source + ')', owner: 'Personne 1',
   }));
   const esppLotsNezha = (p.nezha && p.nezha.espp && p.nezha.espp.lots || []).map(l => ({
     date: l.date, type: 'buy', ticker: 'ACN', qty: l.shares,
     costBasis: l.costBasis, currency: 'USD', cost: l.shares * l.costBasis,
-    label: 'ESPP (' + l.source + ')', owner: 'Nezha',
+    label: 'ESPP (' + l.source + ')', owner: 'Personne 2',
   }));
   const esppAllTrades = [...esppLotsAmine, ...esppLotsNezha];
 
@@ -1591,7 +1591,7 @@ function renderActionsView(state) {
 
   // ESPP Cash moved to cashView (v91) — no longer shown in Actions table
 
-  // SGTM Amine + Nezha
+  // SGTM Personne 1 + Personne 2
   const sgtmShares = av.sgtmAmineShares + av.sgtmNezhaShares;
   const sgtmTotalVal = av.sgtmAmineVal + av.sgtmNezhaVal;
   const sgtmCostBasis = av.sgtmCostBasisEUR || null;
@@ -1615,8 +1615,8 @@ function renderActionsView(state) {
     geo: 'morocco',
     _live: av._sgtmLive,
     _trades: [
-      ...(p.amine.sgtm.shares > 0 ? [{ date: '2025-12-01', type: 'buy', ticker: 'SGTM', qty: p.amine.sgtm.shares, costBasis: p.market.sgtmCostBasisMAD || 420, currency: 'MAD', cost: p.amine.sgtm.shares * (p.market.sgtmCostBasisMAD || 420), label: 'IPO', owner: 'Amine' }] : []),
-      ...(p.nezha.sgtm.shares > 0 ? [{ date: '2025-12-01', type: 'buy', ticker: 'SGTM', qty: p.nezha.sgtm.shares, costBasis: p.market.sgtmCostBasisMAD || 420, currency: 'MAD', cost: p.nezha.sgtm.shares * (p.market.sgtmCostBasisMAD || 420), label: 'IPO', owner: 'Nezha' }] : []),
+      ...(p.amine.sgtm.shares > 0 ? [{ date: '2025-12-01', type: 'buy', ticker: 'SGTM', qty: p.amine.sgtm.shares, costBasis: p.market.sgtmCostBasisMAD || 420, currency: 'MAD', cost: p.amine.sgtm.shares * (p.market.sgtmCostBasisMAD || 420), label: 'IPO', owner: 'Personne 1' }] : []),
+      ...(p.nezha.sgtm.shares > 0 ? [{ date: '2025-12-01', type: 'buy', ticker: 'SGTM', qty: p.nezha.sgtm.shares, costBasis: p.market.sgtmCostBasisMAD || 420, currency: 'MAD', cost: p.nezha.sgtm.shares * (p.market.sgtmCostBasisMAD || 420), label: 'IPO', owner: 'Personne 2' }] : []),
     ],
   });
 
@@ -2116,7 +2116,7 @@ function setupKPIDetailPanels(state) {
 
   // Build all positions list for unrealized P&L breakdown
   const allPos = av.ibkrPositions.map(p => ({ ...p, broker: 'IBKR' }));
-  // Merge ACN Amine + Nezha into single entry
+  // Merge ACN Personne 1 + Personne 2 into single entry
   const acnTotalVal = av.esppCurrentVal + (av.nezhaEsppCurrentVal || 0);
   const acnTotalCost = av.esppCostBasisEUR + (av.nezhaEsppCostBasisEUR || 0);
   const acnTotalPL = av.esppUnrealizedPL + (av.nezhaEsppUnrealizedPL || 0);
@@ -2375,7 +2375,7 @@ function setupKPIDetailPanels(state) {
       html += '</div>';
       if (deps.length > 0) {
         // Group by owner then platform
-        var owners = ['Amine', 'Nezha'];
+        var owners = ['Personne 1', 'Personne 2'];
         owners.forEach(function(owner) {
           var ownerDeps = deps.filter(function(d) { return d.owner === owner; });
           if (ownerDeps.length === 0) return;
@@ -2504,15 +2504,15 @@ function renderCashView(state) {
 
     function renderCashRowsGrouped(items) {
       tbody.innerHTML = '';
-      const owners = ['Amine', 'Nezha'];
+      const owners = ['Personne 1', 'Personne 2'];
       let grandTotalYieldAnn = 0, grandTotalMissed = 0;
       owners.forEach(owner => {
         const ownerAccounts = items.filter(a => a.owner === owner);
         if (ownerAccounts.length === 0) return;
         const ownerPositive = ownerAccounts.filter(a => !a.isDebt);
         const ownerTotal = ownerPositive.reduce((s, a) => s + a.valEUR, 0);
-        const ownerColor = owner === 'Amine' ? '#ebf5fb' : '#fef9e7';
-        const borderColor = owner === 'Amine' ? 'var(--accent)' : 'var(--gold)';
+        const ownerColor = owner === 'Personne 1' ? '#ebf5fb' : '#fef9e7';
+        const borderColor = owner === 'Personne 1' ? 'var(--accent)' : 'var(--gold)';
         // Owner header row
         const hdr = document.createElement('tr');
         hdr.style.cssText = 'background:' + ownerColor + ';border-left:3px solid ' + borderColor + ';';
@@ -2585,7 +2585,7 @@ function renderCashView(state) {
         const isNeg = a.valEUR < 0;
         const cls = isNeg ? ' class="pl-neg"' : '';
         const nativeStr = Math.round(a.native).toLocaleString('fr-FR');
-        const ownerColor = a.owner === 'Amine' ? 'var(--accent)' : 'var(--gold)';
+        const ownerColor = a.owner === 'Personne 1' ? 'var(--accent)' : 'var(--gold)';
         let yieldStr, yieldAnnStr;
         if (isDebt) {
           const costRate = Math.abs(a.yield || 0);
@@ -2626,7 +2626,7 @@ function renderCashView(state) {
     makeTableSortable(cashTable, cashData, renderCashRowsFlat);
   }
 
-  // Yield bars — Couple, Amine, Nezha (click to toggle % ↔ montants, hover for breakdown)
+  // Yield bars — Couple, Personne 1, Personne 2 (click to toggle % ↔ montants, hover for breakdown)
   const barsContainer = document.getElementById('cashYieldBars');
   if (barsContainer && cv.totalCash > 0) {
     const inflRate = 0.03;
@@ -2641,9 +2641,9 @@ function renderCashView(state) {
       { label: 'Couple', yielding: cv.totalYielding, nonYielding: cv.totalNonYielding, total: cv.totalCash,
         yieldSum: cv.weightedAvgYield * cv.totalCash, accounts: allAccounts },
       ...(cv.byOwner ? [
-        { label: 'Amine', yielding: cv.byOwner.Amine.yielding, nonYielding: cv.byOwner.Amine.nonYielding,
+        { label: 'Personne 1', yielding: cv.byOwner.Amine.yielding, nonYielding: cv.byOwner.Amine.nonYielding,
           total: cv.byOwner.Amine.total, yieldSum: cv.byOwner.Amine.weightedYieldSum, accounts: amineAccts },
-        { label: 'Nezha', yielding: cv.byOwner.Nezha.yielding, nonYielding: cv.byOwner.Nezha.nonYielding,
+        { label: 'Personne 2', yielding: cv.byOwner.Nezha.yielding, nonYielding: cv.byOwner.Nezha.nonYielding,
           total: cv.byOwner.Nezha.total, yieldSum: cv.byOwner.Nezha.weightedYieldSum, accounts: nezhaAccts },
       ] : []),
     ];
@@ -3166,7 +3166,7 @@ function renderImmoView(state) {
     });
   }
 
-  // ── LMP Alert Section (Nezha) ──
+  // ── LMP Alert Section (Personne 2) ──
   const lmpSection = document.getElementById('lmpAlertSection');
   if (lmpSection) {
     const rueilProp = fp.find(p => p.loanKey === 'rueil');
@@ -3181,7 +3181,7 @@ function renderImmoView(state) {
 
     // LMP is triggered when:
     // 1. Recettes meublées > 23,000€/an AND
-    // 2. Recettes > revenus d'activité (auto-met for non-resident Nezha)
+    // 2. Recettes > revenus d'activité (auto-met for non-resident Personne 2)
     const isRueilAloneLMP = rueilLoyer > LMP_THRESHOLD;
     const isCombinedLMP = totalLoyerAnnuel > LMP_THRESHOLD;
 
@@ -3226,7 +3226,7 @@ function renderImmoView(state) {
         + '</ul>'
         + '</div>'
         + '<div style="background:#e0e7ff;border-radius:6px;padding:10px;font-size:11px;color:#312e81;margin-top:8px;">'
-        + '<strong>Non-r\u00e9sident :</strong> Nezha n\'a pas de revenus d\'activit\u00e9 en France \u2192 la condition "recettes > revenus d\'activit\u00e9" est automatiquement remplie. D\u00e8s que Villejuif est lou\u00e9 en meubl\u00e9, le statut LMP s\'applique.'
+        + '<strong>Non-r\u00e9sident :</strong> Personne 2 n\'a pas de revenus d\'activit\u00e9 en France \u2192 la condition "recettes > revenus d\'activit\u00e9" est automatiquement remplie. D\u00e8s que Villejuif est lou\u00e9 en meubl\u00e9, le statut LMP s\'applique.'
         + '</div>';
 
       // ═══ FEATURE 2: Tax on Rental Income Breakdown ═══
@@ -4750,7 +4750,7 @@ function renderBudgetView(state) {
   // ── KPIs PERSONAL ──
   setEur('kpiBudgetTotal', bv.personalTotal);
   setEur('kpiBudgetYearly', bv.totalYearly);
-  setEur('kpiBudgetDubai', bv.personalByZone['Dubai'] || 0);
+  setEur('kpiBudgetFrance', bv.personalByZone['France'] || 0);
   setEur('kpiBudgetDigital', (bv.personalByZone['Digital'] || 0) + (bv.personalByZone['France'] || 0));
 
   // ── KPIs INVEST ──
@@ -4768,7 +4768,7 @@ function renderBudgetView(state) {
   const tbody = document.getElementById('budgetDetailTbody');
   const budgetTable = document.getElementById('budgetTable');
   if (tbody) {
-    const zoneColors = { Dubai: '#d69e2e', France: '#2b6cb0', Digital: '#805ad5' };
+    const zoneColors = { France: '#d69e2e', France: '#2b6cb0', Digital: '#805ad5' };
     const typeColors = { Logement: '#e53e3e', 'Crédits': '#2b6cb0', Utilities: '#38a169', Abonnements: '#805ad5', Assurance: '#d69e2e' };
     const freqLabels = { monthly: '/mois', quarterly: '/trim.', yearly: '/an' };
 
@@ -5090,13 +5090,13 @@ function attachKPIInsights(state, view) {
   insights['kpiCoupleNzNW'] = 'Nezha : Immo \u20ac' + f(s.nezha.rueilEquity) + ' (Rueil) + Cash \u20ac' + f(s.nezha.cash) + ' (FR+MA+UAE). Patrimoine diversifi\u00e9 3 devises.' + (s.nezha.villejuifSigned ? '' : ' Villejuif non compt\u00e9 (bail non sign\u00e9).');
   insights['kpiCoupleImmo'] = 'Vitry \u20ac' + f(s.amine.vitryEquity) + ' + Rueil \u20ac' + f(s.nezha.rueilEquity) + ' + Villejuif \u20ac' + f(s.nezha.villejuifEquity) + '. Levier immo : \u20ac' + f(s.couple.immoValue) + ' de valeur pour \u20ac' + f(immoEq) + ' d\'equity.';
 
-  // ── Amine view ──
+  // ── Personne 1 view ──
   insights['kpiAmNW'] = 'Top poste : Actions (' + pct(s.amine.ibkr + s.amine.espp + s.amine.sgtm, s.amine.nw) + '% du NW). Cash UAE repr\u00e9sente ' + pct(s.amine.uae, s.amine.nw) + '% \u2014 Mashreq/Wio rendent 6%/an.';
   insights['kpiAmPortfolio'] = 'IBKR \u20ac' + f(s.amine.ibkr) + ' + ESPP \u20ac' + f(s.amine.espp) + '. Concentration top 3 = 43% du portefeuille. Diversifier vers des ETFs.';
   insights['kpiAmTWR'] = 'Time-Weighted Return : mesure la performance ind\u00e9pendamment des d\u00e9p\u00f4ts/retraits. Comparable au benchmark (CAC 40, S&P 500).';
   insights['kpiAmVitry'] = 'Equity Vitry = valeur estim\u00e9e - CRD. Appr\u00e9ciation +2%/an (GPE Ligne 15). Cr\u00e9ation de richesse +\u20ac1,017/mois.';
 
-  // ── Nezha view ──
+  // ── Personne 2 view ──
   const rueilProp = s.immoView && s.immoView.properties ? s.immoView.properties.find(p => p.loanKey === 'rueil') : null;
   insights['kpiNzNW'] = 'Patrimoine actuel hors Villejuif VEFA. Domin\u00e9 par l\'immobilier (Rueil auto-financ\u00e9, CF +\u20ac' + (rueilProp ? Math.round(rueilProp.cf) : '?') + '/mois).';
   insights['kpiNzRueil'] = 'Equity Rueil = \u20ac' + f(s.nezha.rueilEquity) + '. Cr\u00e9dit Mutuel 1.20%. Auto-financ\u00e9 : loyer couvre 100% des charges. +\u20ac838/mois de richesse.';

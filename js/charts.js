@@ -280,7 +280,7 @@ function buildImmoEquityBar(state) {
   charts.immoEq = new Chart(el, {
     type: 'bar',
     data: {
-      labels: ['Vitry (Amine)','Rueil (Nezha)','Villejuif (Nezha)'],
+      labels: ['Vitry (Personne 1)','Rueil (Personne 2)','Villejuif (Personne 2)'],
       datasets: [{ label: 'Equity', data: [state.amine.vitryEquity, state.nezha.rueilEquity, state.nezha.villejuifEquity], backgroundColor: ['#4a5568','#2b6cb0','#2c7a7b'] }]
     },
     options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
@@ -552,8 +552,8 @@ function buildCashYieldPotential(state) {
 
   const rows = [
     { name: 'Couple', ...computeGap(() => true), color: '#2b6cb0' },
-    { name: 'Amine', ...computeGap(a => a.owner === 'Amine'), color: '#48bb78' },
-    { name: 'Nezha', ...computeGap(a => a.owner === 'Nezha'), color: '#ed8936' },
+    { name: 'Personne 1', ...computeGap(a => a.owner === 'Personne 1'), color: '#48bb78' },
+    { name: 'Personne 2', ...computeGap(a => a.owner === 'Personne 2'), color: '#ed8936' },
   ];
 
   let html = '<div class="yield-potential" style="padding:4px 0;">';
@@ -629,8 +629,8 @@ function buildNWHistoryChart(state) {
       labels,
       datasets: [
         { label: 'Couple', data: history.map(h => h.coupleNW), borderColor: '#48bb78', backgroundColor: 'rgba(72,187,120,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 4, pointBackgroundColor: '#48bb78' },
-        { label: 'Amine', data: history.map(h => h.amineNW), borderColor: '#2b6cb0', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3, borderDash: [5, 3] },
-        { label: 'Nezha', data: history.map(h => h.nezhaNW), borderColor: '#d69e2e', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3, borderDash: [5, 3] },
+        { label: 'Personne 1', data: history.map(h => h.amineNW), borderColor: '#2b6cb0', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3, borderDash: [5, 3] },
+        { label: 'Personne 2', data: history.map(h => h.nezhaNW), borderColor: '#d69e2e', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3, borderDash: [5, 3] },
       ]
     },
     options: {
@@ -808,11 +808,11 @@ function buildCoupleTreemap(state) {
 function buildAmineTreemap(state) {
   // Use totalAssets (positive only) for percentage base
   const total = state.amineCategories.reduce((s, c) => s + c.total, 0);
-  buildGenericTreemap('amineTreemap', 'amineTreemap', state.amineCategories, total, 'du NW Amine');
+  buildGenericTreemap('amineTreemap', 'amineTreemap', state.amineCategories, total, 'du NW Personne 1');
 }
 function buildNezhaTreemap(state) {
   const total = state.nezhaCategories.reduce((s, c) => s + c.total, 0);
-  buildGenericTreemap('nezhaTreemap', 'nezhaTreemap', state.nezhaCategories, total, 'du NW Nezha');
+  buildGenericTreemap('nezhaTreemap', 'nezhaTreemap', state.nezhaCategories, total, 'du NW Personne 2');
 }
 function buildActionsTreemap(state) {
   const total = state.actionsCategories.reduce((s, c) => s + c.total, 0);
@@ -1645,7 +1645,7 @@ function buildBudgetZoneDonut(state) {
   const bv = state.budgetView;
   if (!bv) return;
 
-  const zoneColors = { Dubai: '#d69e2e', France: '#2b6cb0', Digital: '#805ad5' };
+  const zoneColors = { France: '#d69e2e', France: '#2b6cb0', Digital: '#805ad5' };
   const entries = Object.entries(bv.personalByZone || {}).sort((a, b) => b[1] - a[1]);
   const labels = entries.map(e => e[0]);
   const data = entries.map(e => Math.round(e[1]));

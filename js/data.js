@@ -246,7 +246,7 @@ export const PORTFOLIO = {
   // NEZHA
   // ════════════════════════════════════════════════════════
   nezha: {
-    // ── Cash détaillé Nezha (relevés mars 2026) ──
+    // ── Cash détaillé Personne 2 (relevés mars 2026) ──
     cash: {
       revolutEUR: 0,       // EUR — Revolut France (0%)
       creditMutuelCC: 8000,   // EUR — Crédit Mutuel compte courant (0%)
@@ -256,7 +256,7 @@ export const PORTFOLIO = {
       wioAED: 0,           // AED — Wio Savings UAE (0%)
     },
     sgtm: { shares: 0 },   // SGTM Bourse Casablanca
-    // ── ESPP Nezha — UBS Account W3 F0329 11 (relevé juin 2025) ──
+    // ── ESPP Personne 2 — UBS Account W3 F0329 11 (relevé juin 2025) ──
     // Source : relevé UBS "Investment Account June 2025"
     // 40 actions ACN, cost basis total $10,544.20, valeur $11,955.60 au 30/06/2025
     // Cash UBS : $109.56 — dividendes YTD $71.04
@@ -351,7 +351,7 @@ export const CASH_YIELDS = {
   ibkrCashUSD: 0.0314,  // 3.14% = BM 3.64% - 0.50% commission IBKR
   ibkrCashJPY: -0.017,  // NON UTILISÉ DIRECTEMENT — calcul par tranche dans engine.js
   // --- Autres ---
-  // --- Nezha (détaillé par compte) ---
+  // --- Personne 2 (détaillé par compte) ---
   nezhaRevolutEUR: 0,       // Revolut EUR — pas de rendement
   nezhaCreditMutuel: 0,     // Crédit Mutuel CC — pas de rendement
   nezhaLivretA: 0.015,      // LCL Livret A — 1.5% (depuis fév 2026, défiscalisé)
@@ -527,25 +527,25 @@ export const IMMO_CONSTANTS = {
     villejuifFranchise: {
       months: 36,
       startDate: null,         // Prêt non encore débloqué — franchise non commencée
-      loanDisbursed: false,    // Nezha n'a pas encore signé l'offre / débloqué le prêt
+      loanDisbursed: false,    // Personne 2 n'a pas encore signé l'offre / débloqué le prêt
       fraisDossier: 1500,
     },
   },
   // ──────────────────────────────────────────────────────
   // FISCALITÉ IMMOBILIÈRE
   //
-  // ⚠️  Amine et Nezha sont RÉSIDENTS FISCAUX UAE
+  // ⚠️  Personne 1 et Personne 2 sont RÉSIDENTS FISCAUX UAE
   // → Pas d'IR français sur les revenus mondiaux
   // → MAIS : les revenus fonciers de source FRANÇAISE restent
   //   imposables en France (convention fiscale FR-UAE art. 6)
   //
-  // Vitry (Amine) : location NUE → revenus fonciers
+  // Vitry (Personne 1) : location NUE → revenus fonciers
   //   regime: 'micro-foncier' (abattement 30%) si loyers < 15K€/an
   //   Partie du loyer reçue en cash (non déclarée) → exclue du calcul fiscal
   //   En tant que non-résident : taux minimum 20% (pas de TMI progressive)
   //   PS : 17.2% sur les revenus fonciers de source française
   //
-  // Rueil + Villejuif (Nezha) : LMNP (meublé)
+  // Rueil + Villejuif (Personne 2) : LMNP (meublé)
   //   regime: 'micro-BIC' (abattement 50%) si recettes < 77 700€/an
   //   ou régime réel simplifié (amortissement du bien)
   //   Non-résident : taux minimum 20%
@@ -834,7 +834,7 @@ export const EXIT_COSTS = {
     timeline: [
       { date: '2019-11', event: 'Acte notarié signé (5 nov 2019) — achat 240K€', icon: 'doc', done: true },
       { date: '2019-12', event: 'Début prêt Banque exemple (251K€ à 1.20%, 25 ans)', icon: 'bank', done: true },
-      { date: '2019-12', event: 'Résidence principale Nezha', icon: 'home', done: true },
+      { date: '2019-12', event: 'Résidence principale Personne 2', icon: 'home', done: true },
       { date: '2025-09', event: 'Bail meublé signé (Docusign 25/09/2025) — passage LMNP réel', icon: 'doc', done: true },
       { date: '2025-10', event: 'Début location meublée (1 300€ HC + 150€ charges)', icon: 'key', done: true },
       { date: '2025-11', event: '6 ans détention — abattement PV IR 6%', icon: 'tax', done: true },
@@ -904,7 +904,7 @@ export const VITRY_CONSTRAINTS = {
         'Pénalité dégressive : -1/10ème par an',
         'Après juillet 2035 : aucune pénalité — conversion LMNP possible',
         'Zone ANRU / QPV Balzac — condition de localisation respectée',
-        'RP maintenue via déclaration fiscale conjointe (Nezha résidente France)',
+        'RP maintenue via déclaration fiscale conjointe (Personne 2 résidente France)',
       ],
       status: 'actif',
       yearsRemaining: 9,  // à partir de mars 2026
