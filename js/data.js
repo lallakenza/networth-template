@@ -168,6 +168,7 @@ export const PORTFOLIO = {
         // Profit factor : 1.42x | Net : +270€
         // ═══════════════════════════════════════════════════
       ],
+    },
 
     // ──────────────────────────────────────────────────────
     // SGTM (Bourse Casablanca) — voir cours sur casablanca-bourse.com
